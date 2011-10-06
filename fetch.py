@@ -40,6 +40,7 @@ def fetch(uid, object, token):
     """
     
     url = 'https://graph.facebook.com/%d/%s?access_token=%s' % (uid, object, token)
+    print url
 
     f = urllib2.urlopen(url)
     data = f.read() # Expects JSON responsees

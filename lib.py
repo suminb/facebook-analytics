@@ -20,12 +20,12 @@ def deprecated(func):
     
 def split_words(sentence):
     """The function name itself is self-explanatory."""
-    return re.findall(r'\w+', sentence, re.UNICODE):
+    return re.findall(r'\w+', sentence, re.UNICODE)
     
 def count_word_frequency(sentence):
     """The function name itself is self-explanatory."""
     freq = {}
-    for word in re.findall(r'\w+', sentence, re.UNICODE):
+    for word in split_words(sentence):
         if not word in freq:
             freq[word] = 1
         else:
