@@ -1,6 +1,17 @@
 import json
 import urllib2
 
+from lib import deprecated
+
+def get_config():
+    """Note: This function assumes 'config.json' file exists in the same directory."""
+    f = open('config.json')
+    config = json.loads(f.read())
+    f.close()
+    
+    return config
+
+@deprecated
 def get_token():
     """Note: This function assumes 'token.txt' file exists in the same directory."""
     f = open('token.txt')
@@ -8,6 +19,11 @@ def get_token():
     f.close()
     
     return token
+    
+def get_statuses(uid, token):
+    entries = fetch(uid, 'statuses', token)
+    
+    return entries['data']
     
 def fetch_friends():
     """Note: This function assumes 'friends.json' file exists in the same directory."""
@@ -24,8 +40,7 @@ def fetch(uid, object, token):
     """
     
     url = 'https://graph.facebook.com/%d/%s?access_token=%s' % (uid, object, token)
-    print url
-    
+
     f = urllib2.urlopen(url)
     data = f.read() # Expects JSON responsees
     f.close()
@@ -41,3 +56,5 @@ def export_as_json(dict, filename):
 def get_friend_ids(friends):
     """Expects a dictionary object parsed from Facebook Graph API output."""
     return map(lambda x: int(x['id']), friends['data'])
+
+CONFIG = get_config()
