@@ -2,6 +2,7 @@ import json
 import urllib2
 
 def get_token():
+    """Note: This function assumes 'token.txt' file exists in the same directory."""
     f = open('token.txt')
     token = f.read()
     f.close()
@@ -31,12 +32,12 @@ def fetch(uid, object, token):
     
     return json.loads(data)
     
+def export_as_json(dict, filename):
+    """dict: A JSON serializable dictionary object."""
+    f = open(filename, 'w')
+    f.write(json.dumps(dict))
+    f.close()
 
-token = get_token()
-
-#friends = fetch(10132775, 'friends', token)
-
-#f = open('friends.json', 'w')
-#f.write(json.dumps(friends))
-#f.close()
-
+def get_friend_ids(friends):
+    """Expects a dictionary object parsed from Facebook Graph API output."""
+    return map(lambda x: int(x['id']), friends['data'])
