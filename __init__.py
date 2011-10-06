@@ -45,6 +45,7 @@ Overview of data structure
 }
 """
 
+"""
 entries = {'data':[]}
 for uid in get_friend_ids(fetch_friends()) + [CONFIG['uid']]:
     try:
@@ -70,33 +71,28 @@ comment_weight_by_nonunique_user = 1.1
 
 freq = {}
 
-for uid in get_friend_ids(fetch_friends()):
-    try:
-        for entry in fetch(uid, 'statuses', token)['data']:
-            #print entry['message'][:48]
+for entry in json.loads(open('entries.json').read())['data']:
+    message = entry['message']
+    like_count = len(entry['likes']['data']) if 'likes' in entry else 0
+    
+    if 'comments' in entry:
+        comment_count = len(entry['comments']['data'])
+        unique_users_commented = len(unique_users(entry['comments']))
+    else:
+        comment_count = 0
+        unique_users_commented = 0
+    
+    weighed_score = sum((like_count*like_weight,
+            unique_users_commented*comment_weight,
+            (comment_count-unique_users_commented)*comment_weight_by_nonunique_user
+    ))
             
-            message = entry['message']
-            like_count = len(entry['likes']['data']) if 'likes' in entry else 0
-            
-            if 'comments' in entry:
-                comment_count = len(entry['comments']['data'])
-                unique_users_commented = len(unique_users(entry['comments']))
-            else:
-                comment_count = 0
-                unique_users_commented = 0
-            
-            weighed_score = sum((like_count*like_weight,
-                    unique_users_commented*comment_weight,
-                    (comment_count-unique_users_commented)*comment_weight_by_nonunique_user
-            ))
-                    
-            words = split_words(message)
-            for word in words:
-                if not word in freq: freq[word] = 0.0
-                
-                freq[word] += weighed_score
-    except:
-        pass
+    words = split_words(message)
+    for word in words:
+        if not word in freq: freq[word] = 0.0
+        
+        freq[word] += weighed_score
+
             
 # Sorting words by their 'value' in ascending order
 for item in sorted(freq.iteritems(), key=operator.itemgetter(1), reverse=True):
@@ -104,4 +100,3 @@ for item in sorted(freq.iteritems(), key=operator.itemgetter(1), reverse=True):
 
 print 'Analyzed %d entries' % len(freq)
 
-"""
