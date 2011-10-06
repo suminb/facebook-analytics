@@ -64,14 +64,15 @@ f.close()
 
 """
 
-like_weight = 1.5
+like_weight = 1.25
 comment_weight = 2.0
 comment_weight_by_nonunique_user = 1.1
 #unique_user_commented_weight = 
 
 freq = {}
 
-for entry in json.loads(open('entries.json').read())['data']:
+#for entry in json.loads(open('entries.json').read())['data']:
+for entry in fetch(CONFIG['uid'], 'statuses', token)['data']:
     message = entry['message']
     like_count = len(entry['likes']['data']) if 'likes' in entry else 0
     
@@ -95,8 +96,10 @@ for entry in json.loads(open('entries.json').read())['data']:
 
             
 # Sorting words by their 'value' in ascending order
-for item in sorted(freq.iteritems(), key=operator.itemgetter(1), reverse=True):
-    print unicode(item[0]), item[1]
+ranks = sorted(freq.iteritems(), key=operator.itemgetter(1), reverse=True)
 
-print 'Analyzed %d entries' % len(freq)
+print ranks
+print 'Analyzed %d entries' % len(ranks)
+
+print ' '.join(map(lambda x: x[0], ranks[:25]))
 

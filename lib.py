@@ -20,7 +20,7 @@ def deprecated(func):
     
 def split_words(sentence):
     """The function name itself is self-explanatory."""
-    return re.findall(r'\w+', sentence, re.UNICODE)
+    return map(lambda x: x.lower(), re.findall(r'\w+', sentence, re.UNICODE))
     
 def count_word_frequency(sentence):
     """The function name itself is self-explanatory."""
